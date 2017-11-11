@@ -18,6 +18,13 @@
     {
         "ParameterKey": "QSS3KeyPrefix",
         "ParameterValue": "heptio/kubernetes/latest"
+    },
+    {
+        "ParameterKey": "AgentSecretKey",
+        "ParameterValue": "secretkey"
+    },
+    {
+        "ParameterKey": "AgentTokenKeyID",
+        "ParameterValue": "tokenkeyid"
     }
-
 ]

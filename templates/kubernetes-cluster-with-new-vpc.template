@@ -37,6 +37,8 @@ Metadata:
       - AvailabilityZone
       - AdminIngressLocation
       - KeyName
+      - AgentSecretKey
+      - AgentTokenKeyID
     - Label:
         default: Advanced
       Parameters:
@@ -49,6 +51,10 @@ Metadata:
       - QSS3KeyPrefix
 
     ParameterLabels:
+      AgentTokenKeyID:
+        default: Coreo Agent Token key ID
+      AgentSecretKey:
+        default: Coreo Agent Secret Key
       KeyName:
         default: SSH Key
       AvailabilityZone:
@@ -72,6 +78,16 @@ Metadata:
 
 # The Parameters allow the user to pass custom settings to the stack before creation
 Parameters:
+  AgentTokenKeyID:
+    Description: CloudCoreo Agent Token Key ID
+    Type: String
+    ConstraintDescription: must be a valid CloudCoreo agent token key id
+
+  AgentSecretKey:
+    Description: CloudCoreo Agent Token Secret Key
+    Type: String
+    ConstraintDescription: must be a valid CloudCoreo agent secret key
+
   KeyName:
     Description: Existing EC2 KeyPair for SSH access.
     Type: AWS::EC2::KeyPair::KeyName
@@ -445,6 +461,10 @@ Resources:
           Fn::Sub: |
             #!/bin/bash
 
+            CC_AGENT_TOKEN_SECRET_KEY=${AgentSecretKey} \
+            CC_AGENT_TOKEN_KEY_ID=${AgentTokenKeyID} \
+            bash -c "$(curl -sS -L https://app.cloudcoreo.com/downloads/setup-coreo-agent.sh)"
+
             BASTION_BOOTSTRAP_FILE=bastion_bootstrap.sh
             BASTION_BOOTSTRAP=https://s3.amazonaws.com/quickstart-reference/linux/bastion/latest/scripts/bastion_bootstrap.sh
 
@@ -473,6 +493,8 @@ Resources:
     Properties:
       TemplateURL: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}/templates/kubernetes-cluster.template"
       Parameters:
+        AgentTokenKeyID: !Ref AgentTokenKeyID
+        AgentSecretKey: !Ref AgentSecretKey
         VPCID: !Ref VPC
         AvailabilityZone: !Ref AvailabilityZone
         InstanceType: !Ref InstanceType

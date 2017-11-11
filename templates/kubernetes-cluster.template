@@ -35,6 +35,8 @@ Metadata:
     - Label:
         default: Amazon EC2 Configuration
       Parameters:
+      - AgentSecretKey
+      - AgentTokenKeyID
       - VPCID
       - AvailabilityZone
       - InstanceType
@@ -60,6 +62,10 @@ Metadata:
       - ClusterAssociation
 
     ParameterLabels:
+      AgentTokenKeyID:
+        default: Coreo Agent Token key ID
+      AgentSecretKey:
+        default: Coreo Agent Secret Key
       KeyName:
         default: SSH Key
       VPCID:
@@ -98,6 +104,16 @@ Parameters:
     Description: Existing EC2 KeyPair for SSH access.
     Type: AWS::EC2::KeyPair::KeyName
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
+
+  AgentTokenKeyID:
+    Description: CloudCoreo Agent Token Key ID
+    Type: String
+    ConstraintDescription: must be a valid CloudCoreo agent token key id
+
+  AgentSecretKey:
+    Description: CloudCoreo Agent Token Secret Key
+    Type: String
+    ConstraintDescription: must be a valid CloudCoreo agent secret key
 
   VPCID:
     Description: Existing VPC to use for this cluster.
@@ -444,6 +460,10 @@ Resources:
               --resource K8sMasterInstance \
               --configsets master-setup
 
+            CC_AGENT_TOKEN_SECRET_KEY=${AgentSecretKey} \
+            CC_AGENT_TOKEN_KEY_ID=${AgentTokenKeyID} \
+            bash -c "$(curl -sS -L https://app.cloudcoreo.com/downloads/setup-coreo-agent.sh)"
+
             /usr/local/bin/cfn-signal \
               --exit-code $? \
               --stack '${AWS::StackName}' \
@@ -663,6 +683,10 @@ Resources:
               --region '${AWS::Region}' \
               --resource LaunchConfig \
               --configsets node-setup
+
+            CC_AGENT_TOKEN_SECRET_KEY=${AgentSecretKey} \
+            CC_AGENT_TOKEN_KEY_ID=${AgentTokenKeyID} \
+            bash -c "$(curl -sS -L https://app.cloudcoreo.com/downloads/setup-coreo-agent.sh)"
 
             /usr/local/bin/cfn-signal \
               --exit-code $? \
