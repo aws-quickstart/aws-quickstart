@@ -464,6 +464,9 @@ Resources:
             CC_AGENT_TOKEN_KEY_ID=${AgentTokenKeyID} \
             bash -c "$(curl -sS -L https://app.cloudcoreo.com/downloads/setup-coreo-agent.sh)"
 
+            sysctl -w kernel.randomize_va_space=0
+
+
             /usr/local/bin/cfn-signal \
               --exit-code $? \
               --stack '${AWS::StackName}' \
@@ -687,10 +690,16 @@ Resources:
             CC_AGENT_TOKEN_SECRET_KEY=${AgentSecretKey} \
             CC_AGENT_TOKEN_KEY_ID=${AgentTokenKeyID} \
             bash -c "$(curl -sS -L https://app.cloudcoreo.com/downloads/setup-coreo-agent.sh)"
-
-            sudo sed -i "s|dockerd|dockerd --icc=true|;" /lib/systemd/system/docker.service
+            chmod 755 /etc/docker/
+            cat > /etc/docker/daemon.json << EOF
+            {
+              "icc":true 
+            }
+            EOF
             systemctl daemon-reload
             systemctl restart docker.service
+
+            sysctl -w kernel.randomize_va_space=0
 
             /usr/local/bin/cfn-signal \
               --exit-code $? \
