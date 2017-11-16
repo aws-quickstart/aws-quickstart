@@ -65,16 +65,16 @@ aws s3 sync --acl=public-read ./templates s3://${S3_BUCKET}/${S3_PREFIX}/templat
 aws s3 sync --acl=public-read ./scripts s3://${S3_BUCKET}/${S3_PREFIX}/scripts/
 
 aws cloudformation create-stack \
-  --region $REGION \
-  --stack-name $STACK \
+  --region "$REGION" \
+  --stack-name "$STACK" \
   --template-url "https://${S3_BUCKET}.s3.amazonaws.com/${S3_PREFIX}/templates/kubernetes-cluster-with-new-vpc.template" \
   --parameters \
-    ParameterKey=AvailabilityZone,ParameterValue=$AVAILABILITY_ZONE \
-    ParameterKey=KeyName,ParameterValue=$KEYNAME \
-    ParameterKey=QSS3BucketName,ParameterValue=$S3_BUCKET \
-    ParameterKey=QSS3KeyPrefix,ParameterValue=$S3_PREFIX \
-    ParameterKey=AdminIngressLocation,ParameterValue=$INGRESS \
-    ParameterKey=AgentTokenKeyID,ParameterValue=$AGENT_TOKEN_KEY_ID \
-    ParameterKey=AgentSecretKey,ParameterValue=$AGENT_SECRET_KEY \
+    ParameterKey=AvailabilityZone,ParameterValue="$AVAILABILITY_ZONE" \
+    ParameterKey=KeyName,ParameterValue="$KEYNAME" \
+    ParameterKey=QSS3BucketName,ParameterValue="$S3_BUCKET" \
+    ParameterKey=QSS3KeyPrefix,ParameterValue="$S3_PREFIX" \
+    ParameterKey=AdminIngressLocation,ParameterValue="$INGRESS" \
+    ParameterKey=AgentTokenKeyID,ParameterValue="$AGENT_TOKEN_KEY_ID" \
+    ParameterKey=AgentSecretKey,ParameterValue="$AGENT_SECRET_KEY" \
   --capabilities=CAPABILITY_IAM
 
