@@ -42,7 +42,6 @@ Metadata:
     - Label:
         default: Advanced
       Parameters:
-      - NetworkingProvider
       - K8sNodeCapacity
       - InstanceType
       - DiskSizeGb
@@ -73,8 +72,6 @@ Metadata:
         default: S3 Bucket
       QSS3KeyPrefix:
         default: S3 Key Prefix
-      NetworkingProvider:
-        default: Networking Provider
 
 # The Parameters allow the user to pass custom settings to the stack before creation
 Parameters:
@@ -246,18 +243,6 @@ Parameters:
       in the S3 Bucket parameter. The S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/). It cannot start or end with
       forward slashes (/) because they are automatically appended.
-    Type: String
-
-  NetworkingProvider:
-    AllowedValues:
-    - calico
-    - weave
-    ConstraintDescription: 'Currently supported values are "calico" and "weave"'
-    Default: calico
-    Description: Choose the networking provider to use for communication between
-      pods in the Kubernetes cluster. Supported configurations are calico 
-      (https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/)
-      and weave (https://github.com/weaveworks/weave/blob/master/site/kube-addon.md).
     Type: String
 
 Mappings:
@@ -486,89 +471,33 @@ Resources:
         FromPort: '22'
         ToPort: '22'
         CidrIp: !Ref AdminIngressLocation
-  
-  # Call the cluster template and supply its parameters
-  # This creates a second stack that creates the actual Kubernetes cluster
-  # within the new VPC
-  K8sStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}/templates/kubernetes-cluster.template"
-      Parameters:
-        AgentTokenKeyID: !Ref AgentTokenKeyID
-        AgentSecretKey: !Ref AgentSecretKey
-        VPCID: !Ref VPC
-        AvailabilityZone: !Ref AvailabilityZone
-        InstanceType: !Ref InstanceType
-        DiskSizeGb: !Ref DiskSizeGb
-        ClusterSubnetId: !Ref PrivateSubnet
-        # Direct SSH access only from the bastion host itself
-        SSHLocation: !Sub "${BastionHost.PrivateIp}/32"
-        ApiLbLocation: !Ref AdminIngressLocation
-        KeyName: !Ref KeyName
-        K8sNodeCapacity: !Ref K8sNodeCapacity
-        QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Ref QSS3KeyPrefix
-        ClusterAssociation: !Ref AWS::StackName
-        NetworkingProvider: !Ref NetworkingProvider
-        LoadBalancerSubnetId: !Ref PublicSubnet
 
 Outputs:
   # Outputs from VPC creation
+  StackName:
+    Description: ID of the newly-created EC2 VPC.
+    Value: !Ref AWS::StackName
+
   VPCID:
     Description: ID of the newly-created EC2 VPC.
     Value: !Ref VPC
+
+  PublicSubnet:
+    Description: ID of the newly-created EC2 VPC.
+    Value: !Ref PublicSubnet
+
+  PrivateSubnet:
+    Description: ID of the newly-created EC2 VPC.
+    Value: !Ref PrivateSubnet
 
   BastionHostPublicIp:
     Description: IP Address of the bastion host for the newly-created EC2 VPC.
     Value: !GetAtt BastionHost.PublicIp
 
+  BastionHostPrivateIp:
+    Description: IP Address of the bastion host for the newly-created EC2 VPC.
+    Value: !GetAtt BastionHost.PrivateIp
+
   BastionHostPublicDNS:
     Description: Public DNS FQDN of the bastion host for the newly-created EC2 VPC.
     Value: !GetAtt BastionHost.PublicDnsName
-
-  SSHProxyCommand:
-    Description: Run locally - SSH command to proxy to the master instance
-      through the bastion host, to access port 8080 (command to SSH to the master Kubernetes node).
-    Value: !Sub >-
-      SSH_KEY="path/to/${KeyName}.pem";
-      ssh
-      -i $SSH_KEY
-      -A -L8080:localhost:8080
-      -o ProxyCommand="ssh -i \"${!SSH_KEY}\" ubuntu@${BastionHost.PublicIp} nc %h %p"
-      ubuntu@${K8sStack.Outputs.MasterPrivateIp}
-
-  GetKubeConfigCommand:
-    Description: Run locally - SCP command to download the Kubernetes configuration
-      file for accessing the new cluster via kubectl, a Kubernetes command line tool.
-      Creates a "kubeconfig" file in the current directory. Then, you can run
-      "export KUBECONFIG=$(pwd)/kubeconfig" to ensure kubectl uses this configuration file.
-      About kubectl - https://kubernetes.io/docs/user-guide/prereqs/ 
-    Value: !Sub >-
-      SSH_KEY="path/to/${KeyName}.pem";
-      scp
-      -i $SSH_KEY
-      -o ProxyCommand="ssh -i \"${!SSH_KEY}\" ubuntu@${BastionHost.PublicIp} nc %h %p"
-      ubuntu@${K8sStack.Outputs.MasterPrivateIp}:~/kubeconfig ./kubeconfig
-
-  # Outputs forwarded from the k8s template
-  MasterInstanceId:
-    Description: InstanceId of the master EC2 instance.
-    Value: !GetAtt K8sStack.Outputs.MasterInstanceId
-
-  MasterPrivateIp:
-    Description: Private IP address of the master.
-    Value: !GetAtt K8sStack.Outputs.MasterPrivateIp
-
-  NodeGroupInstanceId:
-    Description: InstanceId of the newly-created NodeGroup.
-    Value: !GetAtt K8sStack.Outputs.NodeGroupInstanceId
-
-  JoinNodes:
-    Description: Command to join more nodes to this cluster.
-    Value: !GetAtt K8sStack.Outputs.JoinNodes
-
-  NextSteps:
-    Description: Verify your cluster and deploy a test application. Instructions -
-      http://jump.heptio.com/aws-qs-next
-    Value: !GetAtt K8sStack.Outputs.NextSteps
