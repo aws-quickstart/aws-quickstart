@@ -78,3 +78,5 @@ aws cloudformation create-stack \
     ParameterKey=AgentSecretKey,ParameterValue="$AGENT_SECRET_KEY" \
   --capabilities=CAPABILITY_IAM
 
+aws cloudformation wait stack-create-complete --stack-name "$STACK_NAME" --region "$REGION"
+
