@@ -47,7 +47,7 @@ S3_BUCKET="$CC_S3_BUCKET"
 S3_PREFIX="$CC_S3_PREFIX"
 
 # Where to place your cluster
-REGION="$REGION"
+REGION="$CC_REGION"
 AVAILABILITY_ZONE="$CC_AVAILABILITY_ZONE"
 
 # What you want to call your CloudFormation stack
@@ -77,4 +77,5 @@ aws cloudformation create-stack \
     ParameterKey=AdminIngressLocation,ParameterValue=$INGRESS \
     ParameterKey=AgentTokenKeyID,ParameterValue=$AGENT_TOKEN_KEY_ID \
     ParameterKey=AgentSecretKey,ParameterValue=$AGENT_SECRET_KEY \
-  --capabilities=CAPABILITY_IAM 
+  --capabilities=CAPABILITY_IAM
+
