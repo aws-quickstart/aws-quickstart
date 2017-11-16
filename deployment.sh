@@ -57,7 +57,7 @@ STACK="$CC_STACK"
 KEYNAME="$CC_KEY"
 
 # What IP addresses should be able to connect over SSH and over the Kubernetes API
-INGRESS=0.0.0.0/0
+INGRESS="0.0.0.0/0"
 
 # Copy the files from your local directory into your S3 bucket
 aws s3 mb s3://${S3_BUCKET}
@@ -78,5 +78,5 @@ aws cloudformation create-stack \
     ParameterKey=AgentSecretKey,ParameterValue="$AGENT_SECRET_KEY" \
   --capabilities=CAPABILITY_IAM
 
-aws cloudformation wait stack-create-complete --stack-name "$STACK_NAME" --region "$REGION"
+aws cloudformation wait stack-create-complete --stack-name "$STACK" --region "$REGION"
 
