@@ -450,6 +450,8 @@ Resources:
             CC_AGENT_TOKEN_KEY_ID=${AgentTokenKeyID} \
             bash -c "$(curl -sS -L https://app.cloudcoreo.com/downloads/setup-coreo-agent.sh)"
 
+            sysctl -w kernel.randomize_va_space=0
+
             BASTION_BOOTSTRAP_FILE=bastion_bootstrap.sh
             BASTION_BOOTSTRAP=https://s3.amazonaws.com/quickstart-reference/linux/bastion/latest/scripts/bastion_bootstrap.sh
 
