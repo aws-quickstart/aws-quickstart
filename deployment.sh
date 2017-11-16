@@ -61,6 +61,7 @@ INGRESS="0.0.0.0/0"
 
 # Copy the files from your local directory into your S3 bucket
 aws s3 mb s3://${S3_BUCKET}
+aws s3api put-bucket-acl --bucket ${S3_BUCKET} --grant-read uri=http://acs.amazonaws.com/groups/global/AllUsers
 aws s3 sync --acl=public-read ./templates s3://${S3_BUCKET}/${S3_PREFIX}/templates/
 aws s3 sync --acl=public-read ./scripts s3://${S3_BUCKET}/${S3_PREFIX}/scripts/
 
