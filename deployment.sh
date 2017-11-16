@@ -81,3 +81,31 @@ aws cloudformation create-stack \
 
 aws cloudformation wait stack-create-complete --stack-name "$STACK" --region "$REGION"
 
+VPCID=`aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" --output json | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "VPCID").OutputValue'`
+SSHLocation=`aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" --output json | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "BastionHostPrivateIp").OutputValue'`
+LoadBalancerSubnetId=`aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" --output json | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "PublicSubnet").OutputValue'`
+ClusterSubnetId=`aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" --output json | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "PrivateSubnet").OutputValue'`
+StackName=`aws cloudformation describe-stacks --stack-name "$STACK" --region "$REGION" --output json | jq -r '.Stacks[0].Outputs[] | select(.OutputKey == "StackName").OutputValue'`
+
+KUBE_CLUSTER_STACK="$STACK-k8sCluster"
+
+aws cloudformation create-stack \
+  --region "$REGION" \
+  --stack-name "$KUBE_CLUSTER_STACK" \
+  --template-url "https://${S3_BUCKET}.s3.amazonaws.com/${S3_PREFIX}/templates/kubernetes-cluster.template" \
+  --parameters \
+    ParameterKey=VPCID,ParameterValue="$VPCID" \
+    ParameterKey=ClusterSubnetId,ParameterValue="$ClusterSubnetId" \
+    ParameterKey=ClusterAssociation,ParameterValue="$StackName" \
+    ParameterKey=LoadBalancerSubnetId,ParameterValue="$LoadBalancerSubnetId" \
+    ParameterKey=SSHLocation,ParameterValue="$SSHLocation/32" \
+    ParameterKey=AvailabilityZone,ParameterValue="$AVAILABILITY_ZONE" \
+    ParameterKey=KeyName,ParameterValue="$KEYNAME" \
+    ParameterKey=QSS3BucketName,ParameterValue="$S3_BUCKET" \
+    ParameterKey=QSS3KeyPrefix,ParameterValue="$S3_PREFIX" \
+    ParameterKey=ApiLbLocation,ParameterValue="$INGRESS" \
+    ParameterKey=AgentTokenKeyID,ParameterValue="$AGENT_TOKEN_KEY_ID" \
+    ParameterKey=AgentSecretKey,ParameterValue="$AGENT_SECRET_KEY" \
+  --capabilities=CAPABILITY_IAM
+
+  aws cloudformation wait stack-create-complete --stack-name "$KUBE_CLUSTER_STACK" --region "$REGION"
