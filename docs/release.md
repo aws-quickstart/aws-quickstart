@@ -19,7 +19,7 @@ in Wardroom.
 * You'll need Amazon creds in the environment. [aws-vault][vault] is useful for
   this. If you use vault, preface the following commands with something like
   `aws-vault exec <profile name> --`
-* Make you are on a clean tree, preferably the origin's `master`.
+* Make sure you are on a clean tree, preferably the origin's `master`.
 
   ```sh
   $ git status
