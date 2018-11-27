@@ -126,17 +126,37 @@ Parameters:
     - c5.2xlarge
     - c5.4xlarge
     - c5.9xlarge
-    - c5.18xlarge
-    - r4.large
-    - r4.xlarge
-    - r4.2xlarge
-    - r4.4xlarge
-    - r4.8xlarge
-    - r4.16xlarge
-    - x1.16xlarge
-    - x1.32xlarge
-    - i3.large
-    - i3.xlarge
+    - c5.large
+    - c5.xlarge
+    - c5d.large
+    - c5d.xlarge
+    - c5d.2xlarge
+    - c5d.4xlarge
+    - c5d.9xlarge
+    - c5d.18xlarge
+    - c5n.large
+    - c5n.xlarge
+    - c5n.2xlarge
+    - c5n.4xlarge
+    - c5n.9xlarge
+    - c5n.18xlarge
+    - d2.xlarge
+    - d2.2xlarge
+    - d2.4xlarge
+    - d2.8xlarge
+    - g3.16xlarge
+    - f1.2xlarge
+    - f1.4xlarge
+    - f1.16xlarge
+    - g3.4xlarge
+    - g3.8xlarge
+    - g3.16xlarge
+    - g3s.xlarge
+    - h1.2xlarge
+    - h1.4xlarge
+    - h1.8xlarge
+    - h1.16xlarge
+    - i3.16xlarge
     - i3.2xlarge
     - i3.4xlarge
     - i3.8xlarge
@@ -146,23 +166,7 @@ Parameters:
     - p2.16xlarge
     - p3.2xlarge
     - p3.8xlarge
-    - p3.16xlarge
-    - m4.large
-    - m4.xlarge
-    - m4.2xlarge
-    - m4.4xlarge
-    - m4.10xlarge
-    - m4.16xlarge
-    - c4.large
-    - c4.xlarge
-    - c4.2xlarge
-    - c4.4xlarge
-    - c4.8xlarge
-    - g3.4xlarge
-    - g3.8xlarge
-    - g3.16xlarge
-    - r3.large
-    - r3.xlarge
+    - p3dn.24xlarge
     - r3.2xlarge
     - r3.4xlarge
     - r3.8xlarge
@@ -189,28 +193,60 @@ Parameters:
     - t2.large
     - t2.xlarge
     - t2.2xlarge
-    - m5.large
-    - m5.xlarge
-    - m5.2xlarge
-    - m5.4xlarge
-    - m5.12xlarge
-    - m5.24xlarge
-    - c5.large
-    - c5.xlarge
+    - t3.nano
+    - t3.micro
+    - t3.small
+    - t3.medium
+    - t3.large
+    - t3.xlarge
+    - t3.2xlarge
+    - t3a.nano
+    - t3a.micro
+    - t3a.small
+    - t3a.medium
+    - t3a.large
+    - t3a.xlarge
+    - t3a.2xlarge
+    - c4.2xlarge
+    - c4.4xlarge
+    - c4.8xlarge
+    - c4.large
+    - c4.xlarge
+    - c5.18xlarge
     - c5.2xlarge
     - c5.4xlarge
     - c5.9xlarge
-    - c5.18xlarge
-    - r4.large
-    - r4.xlarge
-    - r4.2xlarge
-    - r4.4xlarge
-    - r4.8xlarge
-    - r4.16xlarge
-    - x1.16xlarge
-    - x1.32xlarge
-    - i3.large
-    - i3.xlarge
+    - c5.large
+    - c5.xlarge
+    - c5d.large
+    - c5d.xlarge
+    - c5d.2xlarge
+    - c5d.4xlarge
+    - c5d.9xlarge
+    - c5d.18xlarge
+    - c5n.large
+    - c5n.xlarge
+    - c5n.2xlarge
+    - c5n.4xlarge
+    - c5n.9xlarge
+    - c5n.18xlarge
+    - d2.xlarge
+    - d2.2xlarge
+    - d2.4xlarge
+    - d2.8xlarge
+    - g3.16xlarge
+    - f1.2xlarge
+    - f1.4xlarge
+    - f1.16xlarge
+    - g3.4xlarge
+    - g3.8xlarge
+    - g3.16xlarge
+    - g3s.xlarge
+    - h1.2xlarge
+    - h1.4xlarge
+    - h1.8xlarge
+    - h1.16xlarge
+    - i3.16xlarge
     - i3.2xlarge
     - i3.4xlarge
     - i3.8xlarge
@@ -220,23 +256,7 @@ Parameters:
     - p2.16xlarge
     - p3.2xlarge
     - p3.8xlarge
-    - p3.16xlarge
-    - m4.large
-    - m4.xlarge
-    - m4.2xlarge
-    - m4.4xlarge
-    - m4.10xlarge
-    - m4.16xlarge
-    - c4.large
-    - c4.xlarge
-    - c4.2xlarge
-    - c4.4xlarge
-    - c4.8xlarge
-    - g3.4xlarge
-    - g3.8xlarge
-    - g3.16xlarge
-    - r3.large
-    - r3.xlarge
+    - p3dn.24xlarge
     - r3.2xlarge
     - r3.4xlarge
     - r3.8xlarge
